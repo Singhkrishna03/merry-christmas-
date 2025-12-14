@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Social Sharing / Open Graph Tags -->
+    <title>Merry Christmas from Krishna</title>
+    <meta name="description" content="To everyone who has been with me throughout the year: wishing you a season of joy and wonder." />
+    <meta property="og:title" content="Merry Christmas!" />
+    <meta property="og:description" content="To everyone who has been with me throughout the year: wishing you a season of joy and wonder." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1544977823-74a44d8227b2?q=80&w=1200&auto=format&fit=crop" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['"Mountains of Christmas"', 'serif'],
+              body: ['"Quicksand"', 'sans-serif'],
+            },
+            colors: {
+              // Custom colors matching the original design
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        --sky-top-day: #bae6fd;
+        --sky-bot-day: #f0f9ff;
+        --sky-top-night: #0f172a;
+        --sky-bot-night: #312e81;
+        
+        /* Tree Colors */
+        --tree-l1: #14532d;
+        --tree-l2: #15803d;
+        --tree-l3: #16a34a;
+        --tree-trunk: #573c28;
+
+        /* Hill Colors */
+        --hill-back: #bfdbfe;
+        --hill-front: #dbeafe;
+
+        /* Building Colors */
+        --building-wall: #ffffff;
+        --building-roof: #334155;
+        --joseph-robe: #1d4ed8;
+        --mary-robe: #dc2626;
+      }
+
+      .dark {
+        --tree-l1: #064e3b;
+        --tree-l2: #065f46;
+        --tree-l3: #047857;
+        --tree-trunk: #3f2e21;
+
+        --hill-back: #1e1b4b;
+        --hill-front: #312e81;
+
+        --building-wall: #e2e8f0;
+        --building-roof: #1e293b;
+        --joseph-robe: #172554;
+        --mary-robe: #7f1d1d;
+      }
+
+      html { scroll-behavior: smooth; }
+      body { overflow-x: hidden; }
+
+      /* Santa Animation Keyframes */
+      @keyframes santa-x {
+        0% { transform: translateX(-20vw); }
+        100% { transform: translateX(120vw); }
+      }
+      @keyframes santa-y {
+        0%, 100% { transform: translateY(20vh); }
+        25% { transform: translateY(15vh); }
+        50% { transform: translateY(25vh); }
+        75% { transform: translateY(20vh); }
+      }
+      .santa-wrapper {
+        animation: santa-x 20s linear infinite;
+      }
+      .santa-inner {
+        animation: santa-y 5s ease-in-out infinite;
+      }
+
+      /* Star Spin */
+      @keyframes spin-slow {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 8s linear infinite;
+      }
+
+      /* Transitions for theme changes */
+      .theme-transition {
+        transition: background-color 1s ease, color 1s ease, fill 1s ease, stroke 1s ease;
+      }
+      path, circle, rect {
+        transition: fill 1s ease, stroke 1s ease;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.26",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 dark:bg-[#020617] dark:text-white theme-transition">
+
+    <!-- Start Overlay -->
+    <div id="start-overlay" class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 backdrop-blur-md transition-opacity duration-500">
+        <button id="btn-start" class="group relative px-8 py-4 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white font-display text-3xl md:text-5xl flex items-center gap-4 hover:bg-white/20 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_50px_rgba(255,255,255,0.3)]">
+            <span class="relative z-10">Open Christmas Card</span>
+            <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center group-hover:bg-red-500 transition-colors">
+                <i data-lucide="play" class="w-6 h-6 text-white ml-1"></i>
+            </div>
+        </button>
+        <p class="mt-6 text-white/50 font-body text-sm uppercase tracking-widest">Turn on sound for the best experience</p>
+    </div>
+
+    <!-- Controls -->
+    <div class="fixed top-6 right-6 z-[60] flex gap-3">
+        <!-- Theme Toggle -->
+        <button id="btn-theme" class="p-3 rounded-full backdrop-blur-md border transition-all duration-300 shadow-lg bg-slate-800/50 border-slate-600 text-yellow-300 hover:bg-slate-700/50 dark:bg-slate-800/50 dark:border-slate-600 dark:text-yellow-300 bg-white/50 border-white text-orange-500 hover:bg-white/80">
+            <i id="icon-theme" data-lucide="moon" class="w-6 h-6"></i>
+        </button>
+        <!-- Audio Toggle -->
+        <button id="btn-audio" class="p-3 rounded-full backdrop-blur-md border transition-all duration-300 shadow-lg dark:bg-slate-800/50 dark:border-slate-600 dark:text-slate-200 bg-white/50 border-white text-slate-700">
+             <i id="icon-audio" data-lucide="volume-2" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <!-- Snowfall Canvas -->
+    <canvas id="snowfall" class="fixed inset-0 pointer-events-none z-20" style="filter: blur(0.8px)"></canvas>
+
+    <!-- LAYER 0: Background Landscape (GrandHall) -->
+    <div class="fixed inset-0 w-full h-full z-0 overflow-hidden theme-transition">
+        <!-- Sky Gradients -->
+        <div class="absolute inset-0 transition-opacity duration-1000 opacity-0 dark:opacity-100 bg-gradient-to-b from-[#0f172a] to-[#312e81]">
+           <!-- Stars -->
+           <div id="stars-container"></div>
+        </div>
+        <div class="absolute inset-0 transition-opacity duration-1000 opacity-100 dark:opacity-0 bg-gradient-to-b from-[#bae6fd] to-[#f0f9ff]"></div>
+
+        <!-- Moon/Sun -->
+        <div id="celestial-body" class="absolute top-[10%] right-[10%] z-0">
+             <div class="w-24 h-24 rounded-full transition-all duration-1000 dark:bg-yellow-100 dark:shadow-[0_0_60px_rgba(255,255,255,0.2)] bg-yellow-400 shadow-[0_0_60px_rgba(253,224,71,0.6)]"></div>
+        </div>
+
+        <!-- Back Hill -->
+        <div id="hill-back" class="absolute bottom-0 left-0 w-full h-[40vh]">
+            <svg viewBox="0 0 1440 320" class="w-full h-full opacity-80" preserveAspectRatio="none">
+                <path d="M0,192L80,186.7C160,181,320,171,480,181.3C640,192,800,224,960,218.7C1120,213,1280,171,1360,149.3L1440,128L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z" style="fill: var(--hill-back)"></path>
+            </svg>
+        </div>
+
+        <!-- Front Hill -->
+        <div id="hill-front" class="absolute bottom-0 left-0 w-full h-[30vh]">
+            <svg viewBox="0 0 1440 320" class="w-full h-full" preserveAspectRatio="none">
+                <path d="M0,256L60,245.3C120,235,240,213,360,197.3C480,181,600,171,720,186.7C840,203,960,245,1080,245.3C1200,245,1320,203,1380,181.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" style="fill: var(--hill-front)"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- LAYER 1: Parallax Tree (Hero) -->
+    <div id="parallax-tree" class="fixed inset-0 flex items-center justify-center z-10 pointer-events-none">
+        <div class="relative w-full h-full flex items-center justify-center translate-y-16 md:translate-y-24">
+            <svg viewBox="0 0 400 500" class="h-[75vh] w-auto drop-shadow-2xl">
+                <!-- Trunk -->
+                <path d="M185 400 L215 400 L210 500 L190 500 Z" style="fill: var(--tree-trunk)" />
+                <!-- Bottom Layer -->
+                <path d="M40 420 L200 140 L360 420 L200 440 Z" style="fill: var(--tree-l1)" />
+                <path d="M40 420 L200 140 L200 440 Z" fill="black" fill-opacity="0.15" />
+                <!-- Middle Layer -->
+                <path d="M70 290 L200 70 L330 290 L200 310 Z" style="fill: var(--tree-l2)" />
+                <path d="M70 290 L200 70 L200 310 Z" fill="black" fill-opacity="0.15" />
+                <!-- Top Layer -->
+                <path d="M100 170 L200 20 L300 170 L200 190 Z" style="fill: var(--tree-l3)" />
+                <path d="M100 170 L200 20 L200 190 Z" fill="black" fill-opacity="0.15" />
+                <!-- Star -->
+                <g transform="translate(200, 20)">
+                    <circle r="15" fill="#fcd34d" class="opacity-60 animate-pulse"/>
+                    <path d="M0 -22 L6 -6 L22 -6 L9 4 L14 20 L0 10 L-14 20 L-9 4 L-22 -6 L-6 -6 Z" fill="#fbbf24" />
+                </g>
+                <!-- Ornaments -->
+                <circle cx="160" cy="380" r="8" fill="#ef4444" opacity="0.9" />
+                <circle cx="240" cy="350" r="6" fill="#fbbf24" opacity="0.9" />
+                <circle cx="150" cy="250" r="7" fill="#3b82f6" opacity="0.9" />
+                <circle cx="250" cy="220" r="5" fill="#ef4444" opacity="0.9" />
+                <circle cx="200" cy="120" r="6" fill="#fbbf24" opacity="0.9" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- LAYER 2: Santa Overlay -->
+    <div class="fixed top-0 left-0 w-full h-[60vh] pointer-events-none z-20 overflow-hidden">
+        <div class="santa-wrapper absolute w-48 opacity-80 text-white/90">
+             <div class="santa-inner">
+                <svg viewBox="0 0 200 60" class="w-full drop-shadow-lg fill-current">
+                   <!-- Reindeer 1 -->
+                   <path d="M10 30 Q15 25 20 30 L25 40 L15 40 Z" />
+                   <circle cx="20" cy="28" r="2" />
+                   <!-- Reindeer 2 -->
+                   <path d="M40 25 Q45 20 50 25 L55 35 L45 35 Z" />
+                   <circle cx="50" cy="23" r="2" />
+                   <!-- Reindeer 3 -->
+                   <path d="M70 28 Q75 23 80 28 L85 38 L75 38 Z" />
+                   <circle cx="80" cy="26" r="2" />
+                   <!-- Reins -->
+                   <path d="M20 30 L130 35" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.5"/>
+                   <!-- Sleigh & Santa -->
+                   <path d="M130 35 C130 45 150 45 160 35 L160 25 L130 25 Z" />
+                   <circle cx="145" cy="25" r="5" /> 
+                   <path d="M140 25 L150 25 L145 15 Z" /> 
+                   <!-- Runners -->
+                   <path d="M125 40 L165 40 Q170 30 160 35" stroke="currentColor" stroke-width="1" fill="none" />
+                </svg>
+             </div>
+        </div>
+    </div>
+
+    <!-- LAYER 3: Title (Fixed) -->
+    <div id="hero-title" class="fixed top-0 left-0 w-full h-[90vh] flex flex-col items-center justify-center z-30 pointer-events-none">
+        <h1 class="font-display text-8xl md:text-[11rem] leading-none tracking-tighter text-center drop-shadow-lg mix-blend-overlay text-white opacity-90">
+            Merry<br/>Christmas
+        </h1>
+        <p class="font-body text-sm md:text-xl tracking-[0.5em] mt-6 opacity-80 text-white mix-blend-overlay uppercase">
+            Peace on Earth
+        </p>
+    </div>
+
+    <!-- LAYER 4: Scrollable Foreground Content -->
+    <div class="relative z-40">
+        <!-- Spacer -->
+        <div class="h-[85vh] w-full pointer-events-none"></div>
+
+        <!-- The "Ground" that rises up -->
+        <div class="relative min-h-[100vh] transition-colors duration-1000 pb-32 dark:bg-[#1e293b] bg-[#f8fafc]">
+             <!-- Curved top edge -->
+             <div class="absolute -top-24 left-0 w-full h-24 overflow-hidden leading-none z-10">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-full block transition-colors duration-1000 dark:fill-[#1e293b] fill-[#f8fafc]">
+                   <path d="M0,120 L0,40 Q600,120 1200,40 L1200,120 Z" />
+                </svg>
+             </div>
+
+             <div class="container mx-auto px-4 pt-16 flex flex-col items-center relative z-20">
+                
+                <!-- Nativity Scene -->
+                <div class="relative w-full max-w-5xl mx-auto flex items-end justify-center px-4 mt-8 mb-20">
+                    <div class="absolute bottom-0 w-[80%] h-32 bg-current opacity-5 rounded-[50%] blur-3xl"></div>
+                    <div class="relative flex items-end justify-center gap-4 md:gap-16 pb-4">
+                        
+                        <!-- Church -->
+                        <div id="nativity-church" class="relative flex flex-col items-center origin-bottom transition-transform duration-500 hover:scale-105 opacity-0 translate-x-[-20px]">
+                           <div class="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[60px] border-l-transparent border-r-transparent transition-colors duration-1000" style="border-bottom-color: var(--building-wall)"></div>
+                           <div class="absolute -top-4 w-[2px] h-6 bg-current opacity-50"><div class="absolute top-2 -left-1.5 w-4 h-[2px] bg-current"></div></div>
+                           <div class="w-32 h-24 transition-colors duration-1000 flex items-center justify-center relative shadow-lg rounded-sm" style="background-color: var(--building-wall)">
+                              <div class="w-8 h-12 rounded-t-full bg-current opacity-20 absolute bottom-0"></div>
+                              <div class="w-10 h-10 rounded-full bg-slate-200 border-4 transition-colors duration-1000 flex items-center justify-center overflow-hidden mb-6 shadow-inner" style="border-color: var(--building-roof)">
+                                  <div class="w-full h-full bg-yellow-400 animate-pulse opacity-60"></div>
+                              </div>
+                           </div>
+                           <div class="absolute -left-16 bottom-0 w-20 h-16 transition-colors duration-1000 rounded-sm shadow-md" style="background-color: var(--building-wall)">
+                               <div class="w-0 h-0 border-l-[40px] border-r-[0px] border-b-[20px] border-l-transparent border-r-transparent border-b-current opacity-10 absolute -top-5 left-0"></div>
+                           </div>
+                        </div>
+
+                        <!-- Holy Family -->
+                        <div id="nativity-family" class="relative flex items-end gap-2 opacity-0 translate-y-[20px]">
+                            <!-- Joseph -->
+                           <div class="flex flex-col items-center group cursor-pointer">
+                             <div class="w-5 h-5 rounded-full bg-current opacity-80 mb-[-2px] transition-transform group-hover:-translate-y-1"></div>
+                             <div class="w-8 h-16 rounded-t-2xl opacity-60" style="background-color: currentColor"></div>
+                           </div>
+                           <!-- Manger -->
+                           <div class="relative flex flex-col items-center justify-end mx-1">
+                             <div class="absolute -top-12 w-24 h-24 bg-yellow-400 opacity-20 blur-2xl rounded-full pointer-events-none animate-pulse"></div>
+                             <div class="w-12 h-7 bg-yellow-100/20 rounded-b-lg border-2 border-current/40 relative overflow-hidden">
+                                <div class="absolute inset-0 flex items-center justify-center"><div class="w-5 h-5 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.9)]"></div></div>
+                             </div>
+                             <div class="w-full flex justify-between px-2">
+                                <div class="w-1 h-4 bg-current opacity-40 -rotate-12"></div>
+                                <div class="w-1 h-4 bg-current opacity-40 rotate-12"></div>
+                             </div>
+                           </div>
+                           <!-- Mary -->
+                           <div class="flex flex-col items-center group cursor-pointer">
+                             <div class="w-5 h-5 rounded-full bg-current opacity-80 mb-[-2px] transition-transform group-hover:-translate-y-1"></div>
+                             <div class="w-8 h-12 rounded-t-2xl opacity-60" style="background-color: currentColor"></div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Message -->
+                <div id="custom-message" class="relative z-20 text-center max-w-2xl mx-auto mt-12 mb-16 px-8 py-12 rounded-lg backdrop-blur-[2px] opacity-0 translate-y-[50px] transition-all duration-1000 dark:text-blue-100 text-slate-700">
+                    <h2 class="font-display text-5xl md:text-6xl mb-8 leading-tight">
+                        Wishing you <br/> 
+                        <span class="dark:text-yellow-200 text-red-600">Joy & Wonder</span>
+                    </h2>
+                    <p class="font-body text-lg md:text-xl leading-relaxed opacity-90 tracking-wide mb-8">
+                        To everyone who has been with me throughout the year, thank you for your support and friendship.
+                        May this festive season bring you closer to the ones you love and fill your heart with the warmth of cherished memories.
+                    </p>
+                    <div class="font-display text-3xl opacity-80 rotate-[-2deg]">
+                        With Love, <br/>
+                        <span class="text-4xl">Krishna</span>
+                    </div>
+                </div>
+
+                <!-- Letter -->
+                <div class="mb-12 relative flex flex-col items-center justify-center z-50">
+                    <div id="letter-envelope" class="relative cursor-pointer group transition-transform hover:scale-105 hover:rotate-2 active:scale-95">
+                       <div class="w-64 h-40 bg-[#d4a373] rounded-sm shadow-xl flex items-center justify-center relative overflow-hidden border-b-2 border-[#a97142]">
+                          <div class="absolute top-0 w-0 h-0 border-l-[128px] border-r-[128px] border-t-[80px] border-l-transparent border-r-transparent border-t-[#e6be8a] shadow-sm"></div>
+                          <div class="z-10 bg-red-600 text-white rounded-full p-3 shadow-md">
+                             <i data-lucide="mail" class="w-6 h-6"></i>
+                          </div>
+                       </div>
+                       <div class="mt-4 text-center font-display text-2xl animate-bounce dark:text-white text-slate-800">
+                         Open Me!
+                       </div>
+                    </div>
+                </div>
+
+                <footer class="mt-12 text-xs font-sans opacity-40 tracking-widest uppercase dark:text-white text-slate-800">
+                   Est. 2025 &bull; singh.krishnaaa
+                </footer>
+             </div>
+        </div>
+    </div>
+
+    <!-- Letter Modal -->
+    <div id="letter-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div id="letter-content" class="relative w-full max-w-md bg-[#fff] p-8 md:p-12 shadow-2xl rounded-sm transform scale-80 translate-y-20 rotate-[-5deg] transition-all duration-500" style="background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png')">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-yellow-200/80 rotate-1 shadow-sm"></div>
+            <div class="font-body text-lg text-slate-700 text-center space-y-6">
+                <h2 class="font-display text-4xl text-red-600">Merry Christmas!</h2>
+                <p>To everyone who has been with me throughout the year — wishing you a season filled with light, laughter, and a little bit of magic.</p>
+                <p>Thank you for being part of my journey.</p>
+                <div class="text-4xl pt-4">🎄✨❤️</div>
+                <div class="font-display text-3xl text-slate-800 pt-6 mt-6 border-t border-slate-200 rotate-[-2deg]">
+                  Krishna V. Singh
+                </div>
+            </div>
+            <div class="mt-8 flex justify-center">
+                <button id="btn-close-letter" class="flex items-center gap-2 px-6 py-2 bg-slate-800 text-white rounded-full hover:bg-slate-700 transition-colors font-body font-bold text-sm">
+                  <i data-lucide="arrow-left" class="w-4 h-4"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Initialize Icons ---
+        lucide.createIcons();
+
+        // --- State ---
+        let isPlaying = false;
+        let isNight = true; // Default to Dark mode based on HTML class
+        const audio = new Audio('https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6c/Silent_Night_-_US_Army_Band_Chorus.ogg/Silent_Night_-_US_Army_Band_Chorus.ogg.mp3');
+        const bells = new Audio('https://upload.wikimedia.org/wikipedia/commons/transcoded/3/3d/Church_bells_of_Arklow.ogg/Church_bells_of_Arklow.ogg.mp3');
+        audio.loop = true;
+        bells.loop = true;
+        audio.volume = 0.5;
+        bells.volume = 0.25;
+
+        // --- Elements ---
+        const btnStart = document.getElementById('btn-start');
+        const startOverlay = document.getElementById('start-overlay');
+        const btnTheme = document.getElementById('btn-theme');
+        const btnAudio = document.getElementById('btn-audio');
+        const iconTheme = document.getElementById('icon-theme');
+        const iconAudio = document.getElementById('icon-audio');
+        const letterEnvelope = document.getElementById('letter-envelope');
+        const letterModal = document.getElementById('letter-modal');
+        const letterContent = document.getElementById('letter-content');
+        const btnCloseLetter = document.getElementById('btn-close-letter');
+
+        // --- Event Listeners ---
+        
+        // Start Interaction
+        btnStart.addEventListener('click', () => {
+            startOverlay.classList.add('opacity-0', 'pointer-events-none');
+            toggleAudio(true);
+        });
+
+        // Toggle Audio
+        function toggleAudio(forcePlay = false) {
+            if (forcePlay || !isPlaying) {
+                audio.play().catch(e => console.log(e));
+                bells.play().catch(e => console.log(e));
+                isPlaying = true;
+                iconAudio.setAttribute('data-lucide', 'volume-2');
+                // visual update for button active state
+                btnAudio.classList.remove('opacity-50');
+            } else {
+                audio.pause();
+                bells.pause();
+                isPlaying = false;
+                iconAudio.setAttribute('data-lucide', 'volume-x');
+                btnAudio.classList.add('opacity-50');
+            }
+            lucide.createIcons();
+        }
+
+        btnAudio.addEventListener('click', () => toggleAudio());
+
+        // Toggle Theme
+        btnTheme.addEventListener('click', () => {
+            isNight = !isNight;
+            const html = document.documentElement;
+            
+            if (isNight) {
+                html.classList.add('dark');
+                btnTheme.classList.add('bg-slate-800/50', 'border-slate-600', 'text-yellow-300');
+                btnTheme.classList.remove('bg-white/50', 'border-white', 'text-orange-500');
+                iconTheme.setAttribute('data-lucide', 'moon');
+            } else {
+                html.classList.remove('dark');
+                btnTheme.classList.remove('bg-slate-800/50', 'border-slate-600', 'text-yellow-300');
+                btnTheme.classList.add('bg-white/50', 'border-white', 'text-orange-500');
+                iconTheme.setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+        });
+
+        // Letter Modal
+        letterEnvelope.addEventListener('click', () => {
+            letterModal.classList.remove('hidden');
+            // small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                letterModal.classList.remove('opacity-0');
+                letterContent.classList.remove('scale-80', 'translate-y-20', 'rotate-[-5deg]');
+                letterContent.classList.add('scale-100', 'translate-y-0', 'rotate-0');
+            }, 10);
+        });
+
+        const closeLetter = () => {
+            letterModal.classList.add('opacity-0');
+            letterContent.classList.add('scale-80', 'translate-y-20', 'rotate-[-5deg]');
+            letterContent.classList.remove('scale-100', 'translate-y-0', 'rotate-0');
+            setTimeout(() => {
+                letterModal.classList.add('hidden');
+            }, 300);
+        };
+
+        btnCloseLetter.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLetter();
+        });
+        letterModal.addEventListener('click', closeLetter);
+        letterContent.addEventListener('click', e => e.stopPropagation());
+
+
+        // --- GSAP Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 1. Title Fade Out
+        gsap.to("#hero-title", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "400px top",
+                scrub: true
+            },
+            opacity: 0,
+            y: -150,
+            scale: 0.9
+        });
+
+        // 2. Parallax Tree (Move Down Slower than scroll)
+        gsap.to("#parallax-tree", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.5
+            },
+            y: 100
+        });
+
+        // 3. Background Elements (Moon/Hills)
+        gsap.to("#celestial-body", {
+            scrollTrigger: { trigger: "body", start: "top top", end: "500px top", scrub: true },
+            y: 100
+        });
+        gsap.to("#hill-back", {
+            scrollTrigger: { trigger: "body", start: "top top", end: "500px top", scrub: true },
+            y: 100
+        });
+        gsap.to("#hill-front", {
+            scrollTrigger: { trigger: "body", start: "top top", end: "500px top", scrub: true },
+            y: 50
+        });
+
+        // 4. Reveal Content on Scroll
+        const revealConfig = {
+            scrollTrigger: {
+                trigger: "#nativity-church",
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            opacity: 1,
+            x: 0,
+            duration: 1.5
+        };
+        
+        gsap.to("#nativity-church", revealConfig);
+        
+        gsap.to("#nativity-family", {
+            scrollTrigger: {
+                trigger: "#nativity-church",
+                start: "top 80%"
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.5,
+            delay: 0.3
+        });
+
+        gsap.to("#custom-message", {
+            scrollTrigger: {
+                trigger: "#custom-message",
+                start: "top 85%"
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: "power2.out"
+        });
+
+
+        // --- Stars Generation ---
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            const size = Math.random() * 2 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 60}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.opacity = Math.random() * 0.7;
+            star.className = 'absolute bg-white rounded-full opacity-60';
+            starsContainer.appendChild(star);
+        }
+
+        // --- Snowfall Canvas ---
+        const canvas = document.getElementById('snowfall');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        const particles = [];
+        const particleCount = 400;
+
+        function createParticle(resetY = false) {
+            const z = Math.random();
+            return {
+                x: Math.random() * width,
+                y: resetY ? -10 : Math.random() * height,
+                z: z,
+                size: (z * 2.5) + 1.5,
+                opacity: (z * 0.4) + 0.4,
+                speedY: (z * 1.5) + 0.5,
+                speedX: (Math.random() - 0.5) * 0.3,
+                swayOffset: Math.random() * Math.PI * 2
+            };
+        }
+
+        for (let i = 0; i < particleCount; i++) particles.push(createParticle());
+
+        let time = 0;
+        function animateSnow() {
+            ctx.clearRect(0, 0, width, height);
+            time += 0.005;
+            const wind = Math.sin(time * 0.5) * 0.5;
+
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                p.y += p.speedY;
+                p.x += p.speedX + wind + Math.sin(time * 3 + p.swayOffset) * (p.z * 0.8);
+
+                if (p.y > height + 10) {
+                    const newP = createParticle(true);
+                    Object.assign(p, newP);
+                }
+                if (p.x > width + 20) p.x = -20;
+                if (p.x < -20) p.x = width + 20;
+            });
+
+            requestAnimationFrame(animateSnow);
+        }
+        animateSnow();
+
+    </script>
+</body>
+</html>
